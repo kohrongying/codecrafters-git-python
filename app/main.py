@@ -15,7 +15,7 @@ def main():
             f.write("ref: refs/heads/master\n")
         print("Initialized git directory")
     elif command == "cat-file":
-        #push again
+        print(os.listdir(".git/objects"))
         blob_sha = sys.argv[3]
         with open(f".git/objects/{blob_sha}", 'r') as f:
             content = f.read()
