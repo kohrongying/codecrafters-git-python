@@ -4,8 +4,6 @@ import zlib
 
 def main():
     # You can use print statements as follows for debugging, they'll be visible when running tests.
-    print("Logs from your program will appear here!")
-
     command = sys.argv[1]
     if command == "init":
         os.mkdir(".git")
@@ -15,11 +13,14 @@ def main():
             f.write("ref: refs/heads/master\n")
         print("Initialized git directory")
     elif command == "cat-file":
-        print(os.listdir(".git/objects"))
         blob_sha = sys.argv[3]
-        with open(f".git/objects/{blob_sha}", 'r') as f:
+        blob_folder = blob_sha[:2]
+        blob_sha = blob_sha[2:]
+        with open(f".git/objects/{blob_folder}/{blob_sha}", 'rb') as f:
             content = f.read()
-        print(zlib.decompress(content.encode()), end='')
+            decompressed_content = zlib.decompress(content)
+            _, object_content = decompressed_content.split(b"\x00")
+        print(object_content.decode("utf-8"), end="")
     else:
         raise RuntimeError(f"Unknown command #{command}")
 
